@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Message Detective</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="badge">
+                NAIVE BAYES CLASSIFIER
+            </div>
+
+            <h1>Campus Message Detective</h1>
+
+            <p>
+                Classify college messages as
+                <strong>Important</strong> or
+                <strong>Promotional</strong>
+                using Machine Learning.
+            </p>
+        </header>
+
+
+        <!-- Main Card -->
+        <main class="card">
+
+            <!-- Message Input -->
+            <section class="input-section">
+
+                <h2>Enter a Campus Message</h2>
+
+                <p class="description">
+                    Paste a college announcement, notice, offer,
+                    reminder, or any other campus message below.
+                </p>
+
+                <form method="POST" action="/">
+
+                    <textarea
+                        name="message"
+                        id="message"
+                        rows="7"
+                        placeholder="Example: Please submit your assignment by tomorrow..."
+                        required
+                    >{% if message %}{{ message }}{% endif %}</textarea>
+
+                    <button type="submit" class="predict-btn">
+                        🔍 Analyze Message
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- Result -->
+            {% if result %}
+
+            <section class="result-section">
+
+                <div class="result-header">
+
+                    <h2>Classification Result</h2>
+
+                    {% if result == "Important" %}
+
+                        <div class="result-badge important">
+                            ✓ IMPORTANT
+                        </div>
+
+                    {% else %}
+
+                        <div class="result-badge promotional">
+                            🏷 PROMOTIONAL
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Prediction Message -->
+                <div class="prediction-box">
+
+                    <span class="prediction-label">
+                        Detected Category
+                    </span>
+
+                    <h3>
+                        {{ result }}
+                    </h3>
+
+                    <p>
+                        The Naive Bayes classifier predicts this message
+                        as <strong>{{ result }}</strong>.
+                    </p>
+
+                </div>
+
+
+                <!-- Probabilities -->
+                <div class="probability-section">
+
+                    <h3>Prediction Confidence</h3>
+
+                    {% set important_probability = probabilities["Important"] %}
+                    {% set promotional_probability = probabilities["Promotional"] %}
+
+
+                    <!-- Important -->
+                    <div class="probability-row">
+
+                        <div class="probability-label">
+                            <span>Important</span>
+                            <span>
+                                {{ "%.2f"|format(important_probability) }}%
+                            </span>
+                        </div>
+
+                        <div class="progress">
+                            <div
+                                class="progress-bar important-bar"
+                                data-width="{{ important_probability }}"
+                            ></div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Promotional -->
+                    <div class="probability-row">
+
+                        <div class="probability-label">
+                            <span>Promotional</span>
+                            <span>
+                                {{ "%.2f"|format(promotional_probability) }}%
+                            </span>
+                        </div>
+
+                        <div class="progress">
+                            <div
+                                class="progress-bar promotional-bar"
+                                data-width="{{ promotional_probability }}"
+                            ></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            {% endif %}
+
+
+            <!-- Information -->
+            <section class="info-section">
+
+                <h2>How It Works</h2>
+
+                <div class="steps">
+
+                    <div class="step">
+
+                        <div class="step-number">1</div>
+
+                        <div>
+                            <h3>Message Input</h3>
+                            <p>
+                                Enter any college-related message
+                                into the text box.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="step">
+
+                        <div class="step-number">2</div>
+
+                        <div>
+                            <h3>Text Processing</h3>
+                            <p>
+                                The message is converted into numerical
+                                features using CountVectorizer.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="step">
+
+                        <div class="step-number">3</div>
+
+                        <div>
+                            <h3>Naive Bayes Prediction</h3>
+                            <p>
+                                A Multinomial Naive Bayes classifier
+                                determines the message category.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="step">
+
+                        <div class="step-number">4</div>
+
+                        <div>
+                            <h3>Confidence Score</h3>
+                            <p>
+                                The system displays the probability
+                                for each category.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Model Information -->
+            <section class="model-section">
+
+                <h2>Model Information</h2>
+
+                <div class="model-grid">
+
+                    <div class="model-item">
+                        <span class="model-label">Algorithm</span>
+                        <strong>Multinomial Naive Bayes</strong>
+                    </div>
+
+                    <div class="model-item">
+                        <span class="model-label">Feature Extraction</span>
+                        <strong>CountVectorizer</strong>
+                    </div>
+
+                    <div class="model-item">
+                        <span class="model-label">Training Samples</span>
+                        <strong>56 Messages</strong>
+                    </div>
+
+                    <div class="model-item">
+                        <span class="model-label">Categories</span>
+                        <strong>2 Classes</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- Footer -->
+        <footer class="footer">
+
+            <p>
+                Campus Message Detective
+                • Machine Learning Project
+            </p>
+
+            <p>
+                Built with Python, Flask &amp; Scikit-learn
+            </p>
+
+        </footer>
+
+    </div>
+
+
+    <!-- Progress Bar Script -->
+    <script>
+
+        document
+            .querySelectorAll(".progress-bar")
+            .forEach(function (bar) {
+
+                const width = bar.dataset.width;
+
+                bar.style.width = width + "%";
+
+            });
+
+    </script>
+
+</body>
+</html>
